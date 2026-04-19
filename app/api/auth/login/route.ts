@@ -1,41 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { auths } from "@/dummy-db/auth";
 import { users } from "@/dummy-db/user";
-import { apiDelay } from "@/lib/api";
+import { ApiError, apiDelay, withErrorHandler } from "@/lib/api";
 import { signToken } from "@/lib/jwt";
-import { AuthLoginRequest, AuthLoginResponse } from "@/types/api/auth";
+import { AuthLogin200, AuthLoginBody } from "@/src/orval/auth";
 
-// TODO: エラーレスポンスのルール考える
-type Error = {
-  error: string;
-};
+export const POST = withErrorHandler(
+  async (request: NextRequest): Promise<NextResponse<AuthLogin200>> => {
+    await apiDelay();
 
-export const POST = async (
-  request: NextRequest,
-): Promise<NextResponse<AuthLoginResponse | Error>> => {
-  await apiDelay();
+    const { email, password }: AuthLoginBody = await request.json();
 
-  try {
-    const { email, password }: AuthLoginRequest = await request.json();
-    const user = users.find(
-      (u) => u.email === email && u.password === password,
+    // === 認証情報の確認 ===
+    const auth = auths.find(
+      (a) => a.email === email && a.password === password,
     );
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "メールアドレスまたはパスワードが違います" },
-        { status: 401 },
+    if (!auth) {
+      throw new ApiError(
+        401,
+        "メールアドレスまたはパスワードが違います",
+        "UNAUTHORIZED",
       );
     }
+
+    // === ユーザー情報の確認 ===
+    const user = users.find((u) => u.email === email);
+    if (!user) {
+      throw new ApiError(404, "対応するユーザーが見つかりません", "NOT_FOUND");
+    }
+
+    // === レスポンス作成 ===
+    const response = NextResponse.json({
+      message: "ログイン成功",
+    });
 
     const token = signToken({
       id: user.id,
       roles: user.roles,
-    });
-
-    const response = NextResponse.json({
-      message: "ログイン成功",
-      ok: true,
     });
 
     response.cookies.set("token", token, {
@@ -44,10 +46,5 @@ export const POST = async (
     });
 
     return response;
-  } catch {
-    return NextResponse.json(
-      { error: "サーバーのエラーが発生しました" },
-      { status: 500 },
-    );
-  }
-};
+  },
+);

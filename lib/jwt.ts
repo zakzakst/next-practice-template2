@@ -1,13 +1,13 @@
 import { cookies } from "next/headers";
 
-import { User } from "@/types/domain/user";
+import { UserEntity } from "@/types/entities/user";
 import jwt from "jsonwebtoken";
 
 const SECRET = "my-secret";
 
 export type JwtPayload = {
-  id: User["id"];
-  roles: User["roles"];
+  id: UserEntity["id"];
+  roles: UserEntity["roles"];
 };
 
 export const signToken = (payload: JwtPayload) => {

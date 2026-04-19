@@ -1,17 +1,17 @@
 info:
-  name: ユーザー登録（失敗）
+  name: ログイン（401エラー）
   type: http
-  seq: 4
+  seq: 2
 
 http:
   method: POST
-  url: http://localhost:3000/api/auth/register
+  url: http://localhost:3000/api/auth/login
   body:
     type: json
     data: |-
       {
         "email": "taro@example.com",
-        "password": "password123"
+        "password": "passwordwrong"
       }
   auth: inherit
 

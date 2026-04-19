@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  title: 認証
+  version: 1.0.0
+
+paths:
+  # ログイン
+  /auth/login:
+    post:
+      operationId: authLogin
+      summary: ログイン
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required: ["email", "password"]
+      responses:
+        "200":
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: ["message"]
+
+  # ログアウト
+  /auth/logout:
+    post:
+      operationId: authLogout
+      summary: ログアウト
+      responses:
+        "200":
+          description: ログアウト成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: ["message"]
+
+  # サインイン
+  /auth/signin:
+    post:
+      operationId: authSignin
+      summary: サインイン
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required: ["email", "password"]
+      responses:
+        "200":
+          description: サインイン成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: ["message"]
