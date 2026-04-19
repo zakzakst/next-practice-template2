@@ -4,6 +4,8 @@
  * プロフィール
  * OpenAPI spec version: 1.0.0
  */
+import axios from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import useSwr from "swr";
 import type { Key, SWRConfiguration } from "swr";
 
@@ -28,36 +30,10 @@ export interface Profile {
 /**
  * @summary プロフィール取得
  */
-export type getProfileResponse200 = {
-  data: Profile;
-  status: 200;
-};
-
-export type getProfileResponseSuccess = getProfileResponse200 & {
-  headers: Headers;
-};
-export type getProfileResponse = getProfileResponseSuccess;
-
-export const getGetProfileUrl = () => {
-  return `/api/profile`;
-};
-
-export const getProfile = async (
-  options?: RequestInit,
-): Promise<getProfileResponse> => {
-  const res = await fetch(getGetProfileUrl(), {
-    ...options,
-    method: "GET",
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getProfileResponse["data"] = body ? JSON.parse(body) : {};
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as getProfileResponse;
+export const getProfile = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<Profile>> => {
+  return axios.get(`/api/profile`, options);
 };
 
 export const getGetProfileKey = () => [`/api/profile`] as const;
@@ -65,24 +41,24 @@ export const getGetProfileKey = () => [`/api/profile`] as const;
 export type GetProfileQueryResult = NonNullable<
   Awaited<ReturnType<typeof getProfile>>
 >;
-export type GetProfileQueryError = Promise<unknown>;
+export type GetProfileQueryError = AxiosError<unknown>;
 
 /**
  * @summary プロフィール取得
  */
-export const useGetProfile = <TError = Promise<unknown>>(options?: {
+export const useGetProfile = <TError = AxiosError<unknown>>(options?: {
   swr?: SWRConfiguration<Awaited<ReturnType<typeof getProfile>>, TError> & {
     swrKey?: Key;
     enabled?: boolean;
   };
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }) => {
-  const { swr: swrOptions, fetch: fetchOptions } = options ?? {};
+  const { swr: swrOptions, axios: axiosOptions } = options ?? {};
 
   const isEnabled = swrOptions?.enabled !== false;
   const swrKey =
     swrOptions?.swrKey ?? (() => (isEnabled ? getGetProfileKey() : null));
-  const swrFn = () => getProfile(fetchOptions);
+  const swrFn = () => getProfile(axiosOptions);
 
   const query = useSwr<Awaited<ReturnType<typeof swrFn>>, TError>(
     swrKey,

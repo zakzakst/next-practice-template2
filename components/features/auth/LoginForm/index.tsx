@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAuthLogin } from "@/hooks/useAuth";
+import { useAuthLogin } from "@/src/orval/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -32,7 +34,7 @@ export type LoginFormValues = z.infer<typeof loginFormSchema>;
 export const LoginForm = () => {
   const router = useRouter();
   const { trigger, isMutating } = useAuthLogin();
-  const { meMutate } = useAuth();
+  const { profileMutate } = useAuth();
   const {
     register,
     handleSubmit,
@@ -45,17 +47,16 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = async (values: LoginFormValues) => {
-    if (isMutating) return;
-    const res = await trigger(values);
-    if (res.ok) {
-      await meMutate();
+  const onSubmit = useCallback(
+    async (values: LoginFormValues) => {
+      if (isMutating) return;
+      await trigger(values);
+      await profileMutate();
       toast("ログインしました");
       router.push("/");
-    } else {
-      toast("ログインに失敗しました");
-    }
-  };
+    },
+    [isMutating, trigger, profileMutate],
+  );
 
   return (
     <div className="w-full max-w-md">
@@ -93,7 +94,7 @@ export const LoginForm = () => {
             ログイン
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/register">ユーザー登録</Link>
+            <Link href="/signin">ユーザー登録</Link>
           </Button>
         </CardFooter>
       </Card>

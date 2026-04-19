@@ -4,6 +4,8 @@
  * 認証
  * OpenAPI spec version: 1.0.0
  */
+import axios from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import type { Arguments, Key } from "swr";
 import useSWRMutation from "swr/mutation";
 import type { SWRMutationConfiguration } from "swr/mutation";
@@ -33,42 +35,14 @@ export type AuthSignin200 = {
 /**
  * @summary ログイン
  */
-export type authLoginResponse200 = {
-  data: AuthLogin200;
-  status: 200;
-};
-
-export type authLoginResponseSuccess = authLoginResponse200 & {
-  headers: Headers;
-};
-export type authLoginResponse = authLoginResponseSuccess;
-
-export const getAuthLoginUrl = () => {
-  return `/api/auth/login`;
-};
-
-export const authLogin = async (
+export const authLogin = (
   authLoginBody: AuthLoginBody,
-  options?: RequestInit,
-): Promise<authLoginResponse> => {
-  const res = await fetch(getAuthLoginUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(authLoginBody),
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: authLoginResponse["data"] = body ? JSON.parse(body) : {};
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as authLoginResponse;
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AuthLogin200>> => {
+  return axios.post(`/api/auth/login`, authLoginBody, options);
 };
 
-export const getAuthLoginMutationFetcher = (options?: RequestInit) => {
+export const getAuthLoginMutationFetcher = (options?: AxiosRequestConfig) => {
   return (_: Key, { arg }: { arg: AuthLoginBody }) => {
     return authLogin(arg, options);
   };
@@ -78,12 +52,12 @@ export const getAuthLoginMutationKey = () => [`/api/auth/login`] as const;
 export type AuthLoginMutationResult = NonNullable<
   Awaited<ReturnType<typeof authLogin>>
 >;
-export type AuthLoginMutationError = Promise<unknown>;
+export type AuthLoginMutationError = AxiosError<unknown>;
 
 /**
  * @summary ログイン
  */
-export const useAuthLogin = <TError = Promise<unknown>>(options?: {
+export const useAuthLogin = <TError = AxiosError<unknown>>(options?: {
   swr?: SWRMutationConfiguration<
     Awaited<ReturnType<typeof authLogin>>,
     TError,
@@ -91,12 +65,12 @@ export const useAuthLogin = <TError = Promise<unknown>>(options?: {
     AuthLoginBody,
     Awaited<ReturnType<typeof authLogin>>
   > & { swrKey?: string };
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }) => {
-  const { swr: swrOptions, fetch: fetchOptions } = options ?? {};
+  const { swr: swrOptions, axios: axiosOptions } = options ?? {};
 
   const swrKey = swrOptions?.swrKey ?? getAuthLoginMutationKey();
-  const swrFn = getAuthLoginMutationFetcher(fetchOptions);
+  const swrFn = getAuthLoginMutationFetcher(axiosOptions);
 
   const query = useSWRMutation(swrKey, swrFn, swrOptions);
 
@@ -109,39 +83,13 @@ export const useAuthLogin = <TError = Promise<unknown>>(options?: {
 /**
  * @summary ログアウト
  */
-export type authLogoutResponse200 = {
-  data: AuthLogout200;
-  status: 200;
+export const authLogout = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AuthLogout200>> => {
+  return axios.post(`/api/auth/logout`, undefined, options);
 };
 
-export type authLogoutResponseSuccess = authLogoutResponse200 & {
-  headers: Headers;
-};
-export type authLogoutResponse = authLogoutResponseSuccess;
-
-export const getAuthLogoutUrl = () => {
-  return `/api/auth/logout`;
-};
-
-export const authLogout = async (
-  options?: RequestInit,
-): Promise<authLogoutResponse> => {
-  const res = await fetch(getAuthLogoutUrl(), {
-    ...options,
-    method: "POST",
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: authLogoutResponse["data"] = body ? JSON.parse(body) : {};
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as authLogoutResponse;
-};
-
-export const getAuthLogoutMutationFetcher = (options?: RequestInit) => {
+export const getAuthLogoutMutationFetcher = (options?: AxiosRequestConfig) => {
   return (_: Key, __: { arg: Arguments }) => {
     return authLogout(options);
   };
@@ -151,12 +99,12 @@ export const getAuthLogoutMutationKey = () => [`/api/auth/logout`] as const;
 export type AuthLogoutMutationResult = NonNullable<
   Awaited<ReturnType<typeof authLogout>>
 >;
-export type AuthLogoutMutationError = Promise<unknown>;
+export type AuthLogoutMutationError = AxiosError<unknown>;
 
 /**
  * @summary ログアウト
  */
-export const useAuthLogout = <TError = Promise<unknown>>(options?: {
+export const useAuthLogout = <TError = AxiosError<unknown>>(options?: {
   swr?: SWRMutationConfiguration<
     Awaited<ReturnType<typeof authLogout>>,
     TError,
@@ -164,12 +112,12 @@ export const useAuthLogout = <TError = Promise<unknown>>(options?: {
     Arguments,
     Awaited<ReturnType<typeof authLogout>>
   > & { swrKey?: string };
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }) => {
-  const { swr: swrOptions, fetch: fetchOptions } = options ?? {};
+  const { swr: swrOptions, axios: axiosOptions } = options ?? {};
 
   const swrKey = swrOptions?.swrKey ?? getAuthLogoutMutationKey();
-  const swrFn = getAuthLogoutMutationFetcher(fetchOptions);
+  const swrFn = getAuthLogoutMutationFetcher(axiosOptions);
 
   const query = useSWRMutation(swrKey, swrFn, swrOptions);
 
@@ -182,42 +130,14 @@ export const useAuthLogout = <TError = Promise<unknown>>(options?: {
 /**
  * @summary サインイン
  */
-export type authSigninResponse200 = {
-  data: AuthSignin200;
-  status: 200;
-};
-
-export type authSigninResponseSuccess = authSigninResponse200 & {
-  headers: Headers;
-};
-export type authSigninResponse = authSigninResponseSuccess;
-
-export const getAuthSigninUrl = () => {
-  return `/api/auth/signin`;
-};
-
-export const authSignin = async (
+export const authSignin = (
   authSigninBody: AuthSigninBody,
-  options?: RequestInit,
-): Promise<authSigninResponse> => {
-  const res = await fetch(getAuthSigninUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(authSigninBody),
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: authSigninResponse["data"] = body ? JSON.parse(body) : {};
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as authSigninResponse;
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AuthSignin200>> => {
+  return axios.post(`/api/auth/signin`, authSigninBody, options);
 };
 
-export const getAuthSigninMutationFetcher = (options?: RequestInit) => {
+export const getAuthSigninMutationFetcher = (options?: AxiosRequestConfig) => {
   return (_: Key, { arg }: { arg: AuthSigninBody }) => {
     return authSignin(arg, options);
   };
@@ -227,12 +147,12 @@ export const getAuthSigninMutationKey = () => [`/api/auth/signin`] as const;
 export type AuthSigninMutationResult = NonNullable<
   Awaited<ReturnType<typeof authSignin>>
 >;
-export type AuthSigninMutationError = Promise<unknown>;
+export type AuthSigninMutationError = AxiosError<unknown>;
 
 /**
  * @summary サインイン
  */
-export const useAuthSignin = <TError = Promise<unknown>>(options?: {
+export const useAuthSignin = <TError = AxiosError<unknown>>(options?: {
   swr?: SWRMutationConfiguration<
     Awaited<ReturnType<typeof authSignin>>,
     TError,
@@ -240,12 +160,12 @@ export const useAuthSignin = <TError = Promise<unknown>>(options?: {
     AuthSigninBody,
     Awaited<ReturnType<typeof authSignin>>
   > & { swrKey?: string };
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }) => {
-  const { swr: swrOptions, fetch: fetchOptions } = options ?? {};
+  const { swr: swrOptions, axios: axiosOptions } = options ?? {};
 
   const swrKey = swrOptions?.swrKey ?? getAuthSigninMutationKey();
-  const swrFn = getAuthSigninMutationFetcher(fetchOptions);
+  const swrFn = getAuthSigninMutationFetcher(axiosOptions);
 
   const query = useSWRMutation(swrKey, swrFn, swrOptions);
 

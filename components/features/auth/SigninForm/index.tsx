@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -14,48 +16,47 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAuthRegister } from "@/hooks/useAuth";
+import { useAuthSignin } from "@/src/orval/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
-export const registerFormSchema = z.object({
+export const signinFormSchema = z.object({
   email: z.email({ error: "有効なメールアドレスを入力してください" }),
   password: z
     .string()
     .min(8, { error: "パスワードは8文字以上で入力してください" }),
 });
 
-export type RegisterFormValues = z.infer<typeof registerFormSchema>;
+export type SigninFormValues = z.infer<typeof signinFormSchema>;
 
-export const RegisterForm = () => {
+export const SigninForm = () => {
   const router = useRouter();
-  const { trigger, isMutating } = useAuthRegister();
-  const { meMutate } = useAuth();
+  const { trigger, isMutating } = useAuthSignin();
+  const { profileMutate } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { isValid, errors },
-  } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema),
+  } = useForm<SigninFormValues>({
+    resolver: zodResolver(signinFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: RegisterFormValues) => {
-    if (isMutating) return;
-    const res = await trigger(values);
-    if (res.ok) {
-      await meMutate();
+  const onSubmit = useCallback(
+    async (values: SigninFormValues) => {
+      if (isMutating) return;
+      await trigger(values);
+      await profileMutate();
       toast("ユーザー登録しました");
       router.push("/");
-    } else {
-      toast("ユーザー登録に失敗しました");
-    }
-  };
+    },
+    [isMutating, trigger, profileMutate],
+  );
 
   return (
     <div className="w-full max-w-md">

@@ -12,8 +12,8 @@ vi.mock("next/navigation");
 describe("Navbar", () => {
   test("未ログイン時の表示内容が正しい", () => {
     vi.mocked(useAuth).mockReturnValue({
-      me: null,
-      meMutate: async () => {},
+      profile: null,
+      profileMutate: async () => {},
       logout: async () => {},
       isLoading: false,
       isMutating: false,
@@ -27,8 +27,8 @@ describe("Navbar", () => {
 
   test("未ログイン時かつログインページの場合の表示内容が正しい", () => {
     vi.mocked(useAuth).mockReturnValue({
-      me: null,
-      meMutate: async () => {},
+      profile: null,
+      profileMutate: async () => {},
       logout: async () => {},
       isLoading: false,
       isMutating: false,
@@ -45,10 +45,10 @@ describe("Navbar", () => {
   test("ログイン時の表示内容が正しい", async () => {
     const logoutMock = vi.fn();
     vi.mocked(useAuth).mockReturnValue({
-      me: {
+      profile: {
         ...users[0],
       },
-      meMutate: async () => {},
+      profileMutate: async () => {},
       logout: logoutMock,
       isLoading: false,
       isMutating: false,
