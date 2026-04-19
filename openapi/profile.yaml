@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  title: プロフィール
+  version: 1.0.0
+
+paths:
+  /profile:
+    get:
+      operationId: getProfile
+      summary: プロフィール取得
+      responses:
+        "200":
+          description: プロフィール取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+
+components:
+  schemas:
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            enum: ["user", "admin"]
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required: ["id", "name", "email", "roles", "createdAt", "updatedAt"]
