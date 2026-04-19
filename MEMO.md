@@ -1,29 +1,11 @@
 ### 今回やる
 
-- orval利用して、SWR用の共通fetcherの利用をやめる
-- APIエラーのオブジェクト定義（return {error: string} ではなく throw error する）
-- APIエラー時の共通処理（SWRConfig）
-- ユーザーデータを認証と分ける（認証には最終ログイン時を追加）
-- その他下記
-  - https://github.com/zakzakst/next-practice-book-app/pull/41/changes
-
 ### 後々やりたい
 
-- ユーザーロール編集
 - husky
-- REST以外のAPIのパス・型の命名考える
-- MSWの対象/api配下のみに絞ることできるか調べる
 
 ### メモ
 
-- https://zenn.dev/takepepe/scraps/dfb99e6db2e329
-  - npx next telemetry disable
-- トーストや認証情報のuseContextがからむとstorybook, unit testが複雑になる
-  - APIやページ全体への影響から分離したコンポーネントを作成することを意識したほうがいいと感じた
-    - atomic design的に整理する？ UIとデータ連携で分離する？（LoginFormとLoginFormUiとか作ってLoginFormUiのほうはAPI連携やトースト表示はしない）
-      - 影響が出る部分をhooksにまとめておいてモック化しやすいようにするのも一案か？
-      - ⇒なんかこっちのほうが良い気がしてきた（storybookでhookのモック化できそうであれば、この方針で試してみる）
-    - APIやトーストのモック化できるようになってはおきたいので、一旦は分離しないで作成する
-- テストコード書く、storybook書く
-  - https://storybook.js.org/docs/writing-stories/mocking-data-and-modules/mocking-modules
-  - ⇒上手くできなかった。。上記見た感じ、できそうではある。ただ、詰まってしまったので一旦あきらめる
+- 自分の知識不足ではあるが、orvalだと下記が重そう
+  - かっちり作るのには向いている、小回りはききづらい（のでスピード感や柔軟性、大事な場面には適さないかも）
+  - orvalとaxios両方のエラーハンドリング、セオリー理解する必要がある

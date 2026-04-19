@@ -4,9 +4,8 @@ export default defineConfig({
   auth: {
     input: "./openapi/auth.yaml",
     output: {
-      target: "./src/orval/auth.ts",
+      target: "./orval/auth.ts",
       client: "swr",
-      // httpClient: "fetch",
       baseUrl: "/api",
     },
     hooks: {
@@ -16,9 +15,8 @@ export default defineConfig({
   profile: {
     input: "./openapi/profile.yaml",
     output: {
-      target: "./src/orval/profile.ts",
+      target: "./orval/profile.ts",
       client: "swr",
-      // httpClient: "fetch",
       baseUrl: "/api",
     },
     hooks: {

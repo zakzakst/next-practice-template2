@@ -3,21 +3,17 @@ import { NextResponse } from "next/server";
 import { users } from "@/dummy-db/user";
 import { ApiError, apiDelay, withErrorHandler } from "@/lib/api";
 import { getJwtPayload } from "@/lib/jwt";
-import { Profile } from "@/src/orval/profile";
+import { GetProfile200 } from "@/orval/profile";
 
 export const GET = withErrorHandler(
-  async (): Promise<NextResponse<Profile>> => {
+  async (): Promise<NextResponse<GetProfile200>> => {
     await apiDelay();
 
     // === 認証状態の確認 ===
     const jwtPayload = await getJwtPayload();
     if (!jwtPayload) {
-      // TODO: 調べる。ログインしていない場合nullを返したいが、openapiの書き方分からない。一旦保留
-      throw new ApiError(
-        401,
-        "メールアドレスまたはパスワードが違います",
-        "UNAUTHORIZED",
-      );
+      // 未ログインの場合、空のプロフィール情報を返す
+      return NextResponse.json({});
     }
 
     // === ユーザー情報の確認 ===
@@ -26,6 +22,6 @@ export const GET = withErrorHandler(
       throw new ApiError(404, "対応するユーザーが見つかりません", "NOT_FOUND");
     }
 
-    return NextResponse.json(user);
+    return NextResponse.json({ profile: user });
   },
 );

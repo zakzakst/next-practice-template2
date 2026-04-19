@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { apiDelay, withErrorHandler } from "@/lib/api";
-import { AuthLogout200 } from "@/src/orval/auth";
+import { AuthLogout200 } from "@/orval/auth";
 
 export const POST = withErrorHandler(
   async (): Promise<NextResponse<AuthLogout200>> => {
