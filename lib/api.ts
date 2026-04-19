@@ -25,8 +25,10 @@ export class ApiError extends Error {
 }
 
 export const withErrorHandler = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handler: (...args: any[]) => Promise<NextResponse | Response>,
 ) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (...args: any[]) => {
     try {
       return await handler(...args);

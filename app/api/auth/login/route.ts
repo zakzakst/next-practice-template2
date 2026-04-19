@@ -4,7 +4,7 @@ import { auths } from "@/dummy-db/auth";
 import { users } from "@/dummy-db/user";
 import { ApiError, apiDelay, withErrorHandler } from "@/lib/api";
 import { signToken } from "@/lib/jwt";
-import { AuthLogin200, AuthLoginBody } from "@/src/orval/auth";
+import { AuthLogin200, AuthLoginBody } from "@/orval/auth";
 
 export const POST = withErrorHandler(
   async (request: NextRequest): Promise<NextResponse<AuthLogin200>> => {

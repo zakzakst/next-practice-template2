@@ -4,7 +4,7 @@ import { auths } from "@/dummy-db/auth";
 import { users } from "@/dummy-db/user";
 import { ApiError, apiDelay, withErrorHandler } from "@/lib/api";
 import { signToken } from "@/lib/jwt";
-import { AuthSignin200, AuthSigninBody } from "@/src/orval/auth";
+import { AuthSignin200, AuthSigninBody } from "@/orval/auth";
 import { AuthEntity } from "@/types/entities/auth";
 import { UserEntity } from "@/types/entities/user";
 

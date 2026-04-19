@@ -14,7 +14,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Profile"
+                type: object
+                properties:
+                  profile:
+                    $ref: "#/components/schemas/Profile"
+                    nullable: true
 
 components:
   schemas:

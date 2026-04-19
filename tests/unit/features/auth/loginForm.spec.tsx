@@ -2,14 +2,14 @@ import { useRouter } from "next/navigation";
 
 import { LoginForm } from "@/components/features/auth/LoginForm";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAuthLogin } from "@/src/orval/auth";
+import { useAuthLogin } from "@/orval/auth";
 import { /* fireEvent, */ render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 import { describe, expect, test, vi } from "vitest";
 
 vi.mock("@/contexts/AuthContext");
-vi.mock("@/hooks/useAuth");
+vi.mock("@/orval/auth");
 vi.mock("sonner");
 vi.mock("next/navigation");
 
@@ -23,7 +23,7 @@ describe("LoginForm", () => {
     const toastMock = vi.fn();
     const pushMock = vi.fn();
     vi.mocked(useAuth).mockReturnValue({
-      profile: null,
+      profile: undefined,
       profileMutate: async () => {},
       logout: meMutateMock,
       isLoading: false,

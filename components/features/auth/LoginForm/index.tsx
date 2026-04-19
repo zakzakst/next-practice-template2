@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAuthLogin } from "@/src/orval/auth";
+import { useAuthLogin } from "@/orval/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -55,7 +55,7 @@ export const LoginForm = () => {
       toast("ログインしました");
       router.push("/");
     },
-    [isMutating, trigger, profileMutate],
+    [isMutating, trigger, profileMutate, router],
   );
 
   return (

@@ -12,7 +12,7 @@ vi.mock("next/navigation");
 describe("Navbar", () => {
   test("未ログイン時の表示内容が正しい", () => {
     vi.mocked(useAuth).mockReturnValue({
-      profile: null,
+      profile: undefined,
       profileMutate: async () => {},
       logout: async () => {},
       isLoading: false,
@@ -27,7 +27,7 @@ describe("Navbar", () => {
 
   test("未ログイン時かつログインページの場合の表示内容が正しい", () => {
     vi.mocked(useAuth).mockReturnValue({
-      profile: null,
+      profile: undefined,
       profileMutate: async () => {},
       logout: async () => {},
       isLoading: false,

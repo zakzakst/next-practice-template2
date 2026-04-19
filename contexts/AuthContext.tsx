@@ -5,12 +5,12 @@ import { createContext, useContext } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { useAuthLogout } from "@/src/orval/auth";
-import { Profile, useGetProfile } from "@/src/orval/profile";
+import { useAuthLogout } from "@/orval/auth";
+import { Profile, useGetProfile } from "@/orval/profile";
 import { toast } from "sonner";
 
 type AuthContextType = {
-  profile?: Profile | null;
+  profile?: Profile;
   isLoading: boolean;
   isMutating: boolean;
   profileMutate: () => Promise<void>;
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
-        profile: profile?.data || null,
+        profile: profile?.data.profile,
         isLoading,
         isMutating,
         profileMutate,
