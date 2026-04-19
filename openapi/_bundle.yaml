@@ -1,0 +1,127 @@
+openapi: 3.0.0
+info:
+  title: My App API
+  version: 1.0.0
+paths:
+  /auth/login:
+    post:
+      operationId: authLogin
+      summary: ログイン
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+  /auth/logout:
+    post:
+      operationId: authLogout
+      summary: ログアウト
+      responses:
+        "200":
+          description: ログアウト成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+  /auth/signin:
+    post:
+      operationId: authSignin
+      summary: サインイン
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: サインイン成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+  /profile:
+    get:
+      operationId: getProfile
+      summary: プロフィール取得
+      responses:
+        "200":
+          description: プロフィール取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    $ref: "#/components/schemas/Profile"
+                    nullable: true
+components:
+  schemas:
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            enum:
+              - user
+              - admin
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required:
+        - id
+        - name
+        - email
+        - roles
+        - createdAt
+        - updatedAt
