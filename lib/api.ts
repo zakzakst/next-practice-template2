@@ -24,6 +24,11 @@ export class ApiError extends Error {
   }
 }
 
+export type ErrorResponseBody = {
+  code: string;
+  message: string;
+};
+
 export const withErrorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handler: (...args: any[]) => Promise<NextResponse | Response>,
@@ -34,27 +39,19 @@ export const withErrorHandler = (
       return await handler(...args);
     } catch (error) {
       if (error instanceof ApiError) {
-        return NextResponse.json(
-          {
-            error: {
-              code: error.code,
-              message: error.message,
-            },
-          },
-          { status: error.statusCode },
-        );
+        const responseBody: ErrorResponseBody = {
+          code: error.code,
+          message: error.message,
+        };
+        return NextResponse.json(responseBody, { status: error.statusCode });
       }
 
       console.error("Unhandled API Error:", error);
-      return NextResponse.json(
-        {
-          error: {
-            code: "INTERNAL_SERVER_ERROR",
-            message: "サーバーエラーが発生しました",
-          },
-        },
-        { status: 500 },
-      );
+      const unhandledResponseBody: ErrorResponseBody = {
+        code: "INTERNAL_SERVER_ERROR",
+        message: "サーバーエラーが発生しました",
+      };
+      return NextResponse.json(unhandledResponseBody, { status: 500 });
     }
   };
 };
