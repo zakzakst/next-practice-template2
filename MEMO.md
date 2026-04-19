@@ -1,5 +1,12 @@
 ### 今回やる
 
+- orval利用して、SWR用の共通fetcherの利用をやめる
+- APIエラーのオブジェクト定義（return {error: string} ではなく throw error する）
+- APIエラー時の共通処理（SWRConfig）
+- ユーザーデータを認証と分ける（認証には最終ログイン時を追加）
+- その他下記
+  - https://github.com/zakzakst/next-practice-book-app/pull/41/changes
+
 ### 後々やりたい
 
 - ユーザーロール編集
@@ -10,6 +17,7 @@
 ### メモ
 
 - https://zenn.dev/takepepe/scraps/dfb99e6db2e329
+  - npx next telemetry disable
 - トーストや認証情報のuseContextがからむとstorybook, unit testが複雑になる
   - APIやページ全体への影響から分離したコンポーネントを作成することを意識したほうがいいと感じた
     - atomic design的に整理する？ UIとデータ連携で分離する？（LoginFormとLoginFormUiとか作ってLoginFormUiのほうはAPI連携やトースト表示はしない）
