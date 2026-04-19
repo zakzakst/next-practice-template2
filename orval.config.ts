@@ -6,7 +6,7 @@ export default defineConfig({
     output: {
       target: "./src/orval/auth.ts",
       client: "swr",
-      httpClient: "fetch",
+      // httpClient: "fetch",
       baseUrl: "/api",
     },
     hooks: {
@@ -18,7 +18,7 @@ export default defineConfig({
     output: {
       target: "./src/orval/profile.ts",
       client: "swr",
-      httpClient: "fetch",
+      // httpClient: "fetch",
       baseUrl: "/api",
     },
     hooks: {

@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const Navbar = ({ className }: Props) => {
-  const { me, logout, isLoading, isMutating } = useAuth();
+  const { profile, logout, isLoading, isMutating } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -29,9 +29,11 @@ export const Navbar = ({ className }: Props) => {
         </div>
         {!isLoading && !isMutating && (
           <div className="ml-auto flex items-center gap-2">
-            {me ? (
+            {profile ? (
               <>
-                <span className="leading-none">{me.name || "名前未設定"}</span>
+                <span className="leading-none">
+                  {profile.name || "名前未設定"}
+                </span>
                 <Button onClick={logout}>ログアウト</Button>
               </>
             ) : (

@@ -5,15 +5,15 @@ import { createContext, useContext } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { useAuthLogout, useAuthMe } from "@/hooks/useAuth";
-import { AuthMeResponse } from "@/types/api/auth";
+import { useAuthLogout } from "@/src/orval/auth";
+import { Profile, useGetProfile } from "@/src/orval/profile";
 import { toast } from "sonner";
 
 type AuthContextType = {
-  me?: AuthMeResponse | null;
+  profile?: Profile | null;
   isLoading: boolean;
   isMutating: boolean;
-  meMutate: () => Promise<void>;
+  profileMutate: () => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -22,28 +22,30 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
-  const { data: me, isLoading, mutate } = useAuthMe();
+  const { data: profile, isLoading, mutate } = useGetProfile();
   const { trigger, isMutating } = useAuthLogout();
 
-  const meMutate = useCallback(async () => {
+  // TODO: 調べて修正。SWRから返ってくるmutateの型指定が分からなかったので、一旦useCallbackでラップして回避している
+  const profileMutate = useCallback(async () => {
     mutate();
   }, [mutate]);
 
+  // TODO: 調べて修正。ログアウト状態でプロフィール取得するとAPIがエラーレスポンスを返すので不自然な挙動になる（本当はnullを返してprofileを更新したい）
   const logout = useCallback(async () => {
-    // TODO: エラー時の処理
+    if (isLoading) return;
     await trigger();
     await mutate();
     toast("ログアウトしました");
     router.push("/login");
-  }, [trigger, mutate, router]);
+  }, [isLoading, trigger, mutate, router]);
 
   return (
     <AuthContext.Provider
       value={{
-        me,
+        profile: profile?.data || null,
         isLoading,
         isMutating,
-        meMutate,
+        profileMutate,
         logout,
       }}
     >
@@ -52,7 +54,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// TODO: hooksのuseAuth.tsと重複している。命名検討する（※ファイル名と関数名の違いはある）
 export const useAuth = () => {
   const context = useContext(AuthContext);
 

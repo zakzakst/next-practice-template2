@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { RegisterForm } from "@/components/features/auth/RegisterForm";
+import { SigninForm } from "@/components/features/auth/SigninForm";
 
 export const metadata: Metadata = {
   title: "ユーザー登録",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <div className="grid h-full w-full place-items-center">
-      <RegisterForm />
+      <SigninForm />
     </div>
   );
 };
