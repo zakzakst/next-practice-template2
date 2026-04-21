@@ -32,7 +32,9 @@ export const Navbar = ({ className }: Props) => {
             {me ? (
               <>
                 <span className="leading-none">{me.name || "名前未設定"}</span>
-                <Button onClick={logout}>ログアウト</Button>
+                <Button onClick={logout} data-testid="navbar-logout-button">
+                  ログアウト
+                </Button>
               </>
             ) : (
               <>
