@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { LoginForm } from "@/components/features/auth/LoginForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAuthLogin } from "@/orval/auth";
-import { /* fireEvent, */ render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 import { describe, expect, test, vi } from "vitest";
@@ -18,12 +18,13 @@ describe("LoginForm", () => {
     ["valid.address@mail.com", "validPassword", true],
     ["invalid.address", "short", false],
   ])("バリデーションが正しく挙動する", async (email, password, result) => {
+    // Arrange
     const meMutateMock = vi.fn();
     const triggerMock = vi.fn(async () => ({ ok: true }));
     const toastMock = vi.fn();
     const pushMock = vi.fn();
     vi.mocked(useAuth).mockReturnValue({
-      profile: undefined,
+      me: undefined,
       profileMutate: async () => {},
       logout: meMutateMock,
       isLoading: false,
@@ -45,26 +46,19 @@ describe("LoginForm", () => {
     } as any);
 
     render(<LoginForm />);
-
     const emailInput = screen.getByRole("textbox", { name: "メールアドレス" });
     const passwordInput = screen.getByLabelText("パスワード");
     const submitButton = screen.getByRole("button", { name: "ログイン" });
 
-    // NOTE: fireEventだとreact hook formのバリデーション処理が反映されなかったためuserEventを利用
-    // await fireEvent.change(emailInput, {
-    //   target: { value: "valid.address@mail.com" },
-    // });
-    // await fireEvent.change(passwordInput, {
-    //   target: { value: "validPassword" },
-    // });
-    // await fireEvent.click(submitButton);
-
+    // Assert
     expect(submitButton).toHaveAttribute("disabled");
 
+    // Act
     await userEvent.type(emailInput, email);
     await userEvent.type(passwordInput, password);
     await userEvent.click(submitButton);
 
+    // Assert
     if (result) {
       expect(submitButton).not.toHaveAttribute("disabled");
       expect(triggerMock).toHaveBeenCalled();

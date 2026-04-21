@@ -6,9 +6,26 @@
  */
 import axios from "axios";
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import type { Arguments, Key } from "swr";
+import useSwr from "swr";
+import type { Arguments, Key, SWRConfiguration } from "swr";
 import useSWRMutation from "swr/mutation";
 import type { SWRMutationConfiguration } from "swr/mutation";
+
+export type AuthMeRolesItem =
+  (typeof AuthMeRolesItem)[keyof typeof AuthMeRolesItem];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const AuthMeRolesItem = {
+  user: "user",
+  admin: "admin",
+} as const;
+
+export interface AuthMe {
+  id: number;
+  name: string;
+  roles: AuthMeRolesItem[];
+  lastLoginAt: string;
+}
 
 export type AuthLoginBody = {
   email: string;
@@ -30,6 +47,11 @@ export type AuthSigninBody = {
 
 export type AuthSignin200 = {
   message: string;
+};
+
+export type AuthMe200 = {
+  /** @nullable */
+  me?: AuthMe;
 };
 
 /**
@@ -168,6 +190,49 @@ export const useAuthSignin = <TError = AxiosError<unknown>>(options?: {
   const swrFn = getAuthSigninMutationFetcher(axiosOptions);
 
   const query = useSWRMutation(swrKey, swrFn, swrOptions);
+
+  return {
+    swrKey,
+    ...query,
+  };
+};
+
+/**
+ * @summary 認証情報取得
+ */
+export const authMe = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AuthMe200>> => {
+  return axios.get(`/api/auth/me`, options);
+};
+
+export const getAuthMeKey = () => [`/api/auth/me`] as const;
+
+export type AuthMeQueryResult = NonNullable<Awaited<ReturnType<typeof authMe>>>;
+export type AuthMeQueryError = AxiosError<unknown>;
+
+/**
+ * @summary 認証情報取得
+ */
+export const useAuthMe = <TError = AxiosError<unknown>>(options?: {
+  swr?: SWRConfiguration<Awaited<ReturnType<typeof authMe>>, TError> & {
+    swrKey?: Key;
+    enabled?: boolean;
+  };
+  axios?: AxiosRequestConfig;
+}) => {
+  const { swr: swrOptions, axios: axiosOptions } = options ?? {};
+
+  const isEnabled = swrOptions?.enabled !== false;
+  const swrKey =
+    swrOptions?.swrKey ?? (() => (isEnabled ? getAuthMeKey() : null));
+  const swrFn = () => authMe(axiosOptions);
+
+  const query = useSwr<Awaited<ReturnType<typeof swrFn>>, TError>(
+    swrKey,
+    swrFn,
+    swrOptions,
+  );
 
   return {
     swrKey,

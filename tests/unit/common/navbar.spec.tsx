@@ -2,7 +2,6 @@ import { usePathname } from "next/navigation";
 
 import { Navbar } from "@/components/common/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
-import { users } from "@/dummy-db/user";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 
@@ -11,8 +10,9 @@ vi.mock("next/navigation");
 
 describe("Navbar", () => {
   test("未ログイン時の表示内容が正しい", () => {
+    // Arrange
     vi.mocked(useAuth).mockReturnValue({
-      profile: undefined,
+      me: undefined,
       profileMutate: async () => {},
       logout: async () => {},
       isLoading: false,
@@ -21,13 +21,15 @@ describe("Navbar", () => {
     vi.mocked(usePathname).mockReturnValue("/");
     render(<Navbar />);
 
+    // Assert
     expect(screen.getByText("TOP")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "ログイン" })).toBeInTheDocument();
   });
 
   test("未ログイン時かつログインページの場合の表示内容が正しい", () => {
+    // Arrange
     vi.mocked(useAuth).mockReturnValue({
-      profile: undefined,
+      me: undefined,
       profileMutate: async () => {},
       logout: async () => {},
       isLoading: false,
@@ -36,6 +38,7 @@ describe("Navbar", () => {
     vi.mocked(usePathname).mockReturnValue("/login");
     render(<Navbar />);
 
+    // Assert
     expect(screen.getByText("TOP")).toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: "ログイン" }),
@@ -43,9 +46,15 @@ describe("Navbar", () => {
   });
 
   test("ログイン時の表示内容が正しい", async () => {
+    // Arrange
     const logoutMock = vi.fn();
     vi.mocked(useAuth).mockReturnValue({
-      profile: users[0],
+      me: {
+        id: 1,
+        name: "Taro Yamada",
+        roles: ["user"],
+        lastLoginAt: "2026-04-01T08:00:00.000Z",
+      },
       profileMutate: async () => {},
       logout: logoutMock,
       isLoading: false,
@@ -54,11 +63,15 @@ describe("Navbar", () => {
     vi.mocked(usePathname).mockReturnValue("/");
     render(<Navbar />);
 
+    // Assert
     const logoutButton = screen.getByRole("button", { name: "ログアウト" });
     expect(screen.getByText("TOP")).toBeInTheDocument();
     expect(logoutButton).toBeInTheDocument();
 
+    // Act
     await fireEvent.click(logoutButton);
+
+    // Assert
     expect(logoutMock).toHaveBeenCalled();
   });
 });

@@ -45,6 +45,7 @@ export const LoginForm = () => {
       email: "",
       password: "",
     },
+    mode: "onBlur",
   });
 
   const onSubmit = useCallback(

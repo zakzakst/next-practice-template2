@@ -45,6 +45,7 @@ export const SigninForm = () => {
       email: "",
       password: "",
     },
+    mode: "onBlur",
   });
 
   const onSubmit = useCallback(
