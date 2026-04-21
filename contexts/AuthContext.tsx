@@ -5,12 +5,11 @@ import { createContext, useContext } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { useAuthLogout } from "@/orval/auth";
-import { Profile, useGetProfile } from "@/orval/profile";
+import { AuthMe, useAuthLogout, useAuthMe } from "@/orval/auth";
 import { toast } from "sonner";
 
 type AuthContextType = {
-  profile?: Profile;
+  me?: AuthMe;
   isLoading: boolean;
   isMutating: boolean;
   profileMutate: () => Promise<void>;
@@ -22,7 +21,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
-  const { data: profile, isLoading, mutate } = useGetProfile();
+  const { data, isLoading, mutate } = useAuthMe();
   const { trigger, isMutating } = useAuthLogout();
 
   // TODO: 調べて修正。SWRから返ってくるmutateの型指定が分からなかったので、一旦useCallbackでラップして回避している
@@ -30,7 +29,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     mutate();
   }, [mutate]);
 
-  // TODO: 調べて修正。ログアウト状態でプロフィール取得するとAPIがエラーレスポンスを返すので不自然な挙動になる（本当はnullを返してprofileを更新したい）
   const logout = useCallback(async () => {
     if (isLoading) return;
     await trigger();
@@ -42,7 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
-        profile: profile?.data.profile,
+        me: data?.data?.me,
         isLoading,
         isMutating,
         profileMutate,

@@ -78,3 +78,39 @@ paths:
                   message:
                     type: string
                 required: ["message"]
+
+  # 認証情報取得
+  /auth/me:
+    get:
+      operationId: authMe
+      summary: 認証情報取得
+      responses:
+        "200":
+          description: 認証情報取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  me:
+                    $ref: "#/components/schemas/AuthMe"
+                    nullable: true
+
+components:
+  schemas:
+    AuthMe:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            enum: ["user", "admin"]
+        lastLoginAt:
+          type: string
+          format: date
+      required: ["id", "name", "roles", "lastLoginAt"]
