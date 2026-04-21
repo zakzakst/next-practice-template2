@@ -36,8 +36,8 @@ export const POST = withErrorHandler(
     });
 
     const token = signToken({
-      id: user.id,
-      roles: user.roles,
+      id: auth.id,
+      roles: auth.roles,
     });
 
     response.cookies.set("token", token, {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { auths } from "@/dummy-db/auth";
 import { users } from "@/dummy-db/user";
 import { ApiError, apiDelay, withErrorHandler } from "@/lib/api";
 import { getJwtPayload } from "@/lib/jwt";
@@ -17,7 +18,8 @@ export const GET = withErrorHandler(
     }
 
     // === ユーザー情報の確認 ===
-    const user = users.find((u) => u.id === jwtPayload?.id);
+    const auth = auths.find((a) => a.id === jwtPayload.id);
+    const user = users.find((u) => u.email === auth?.email);
     if (!user) {
       throw new ApiError(404, "対応するユーザーが見つかりません", "NOT_FOUND");
     }
