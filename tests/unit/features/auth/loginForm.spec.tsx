@@ -56,6 +56,7 @@ describe("LoginForm", () => {
     // Act
     await userEvent.type(emailInput, email);
     await userEvent.type(passwordInput, password);
+    await userEvent.tab();
     await userEvent.click(submitButton);
 
     // Assert
