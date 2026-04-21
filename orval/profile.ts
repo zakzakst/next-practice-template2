@@ -9,19 +9,10 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import useSwr from "swr";
 import type { Key, SWRConfiguration } from "swr";
 
-export type ProfileRolesItem =
-  (typeof ProfileRolesItem)[keyof typeof ProfileRolesItem];
-
-export const ProfileRolesItem = {
-  user: "user",
-  admin: "admin",
-} as const;
-
 export interface Profile {
   id: number;
   name: string;
   email: string;
-  roles: ProfileRolesItem[];
   createdAt: string;
   updatedAt: string;
 }

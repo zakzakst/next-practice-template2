@@ -45,9 +45,7 @@ describe("Navbar", () => {
   test("ログイン時の表示内容が正しい", async () => {
     const logoutMock = vi.fn();
     vi.mocked(useAuth).mockReturnValue({
-      profile: {
-        ...users[0],
-      },
+      profile: users[0],
       profileMutate: async () => {},
       logout: logoutMock,
       isLoading: false,

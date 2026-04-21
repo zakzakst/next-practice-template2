@@ -31,15 +31,10 @@ components:
           type: string
         email:
           type: string
-        roles:
-          type: array
-          items:
-            type: string
-            enum: ["user", "admin"]
         createdAt:
           type: string
           format: date
         updatedAt:
           type: string
           format: date
-      required: ["id", "name", "email", "roles", "createdAt", "updatedAt"]
+      required: ["id", "name", "email", "createdAt", "updatedAt"]

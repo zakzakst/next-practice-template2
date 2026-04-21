@@ -29,6 +29,7 @@ export const POST = withErrorHandler(
       id: auths.length + 1,
       email,
       password,
+      roles: ["user"],
       lastLoginAt: new Date().toISOString(),
     };
 
@@ -36,7 +37,6 @@ export const POST = withErrorHandler(
       id: users.length + 1,
       name: "",
       email,
-      roles: ["user"],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -50,8 +50,8 @@ export const POST = withErrorHandler(
     });
 
     const token = signToken({
-      id: newUser.id,
-      roles: newUser.roles,
+      id: newAuth.id,
+      roles: newAuth.roles,
     });
 
     response.cookies.set("token", token, {
