@@ -22,7 +22,7 @@ paths:
                 - email
                 - password
       responses:
-        "200":
+        '200':
           description: ログイン成功
           content:
             application/json:
@@ -38,7 +38,7 @@ paths:
       operationId: authLogout
       summary: ログアウト
       responses:
-        "200":
+        '200':
           description: ログアウト成功
           content:
             application/json:
@@ -68,7 +68,7 @@ paths:
                 - email
                 - password
       responses:
-        "200":
+        '200':
           description: サインイン成功
           content:
             application/json:
@@ -79,31 +79,29 @@ paths:
                     type: string
                 required:
                   - message
-  /profile:
+  /auth/me:
     get:
-      operationId: getProfile
-      summary: プロフィール取得
+      operationId: authMe
+      summary: 認証情報取得
       responses:
-        "200":
-          description: プロフィール取得成功
+        '200':
+          description: 認証情報取得成功
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  profile:
-                    $ref: "#/components/schemas/Profile"
+                  me:
+                    $ref: '#/components/schemas/AuthMe'
                     nullable: true
 components:
   schemas:
-    Profile:
+    AuthMe:
       type: object
       properties:
         id:
-          type: integer
+          type: number
         name:
-          type: string
-        email:
           type: string
         roles:
           type: array
@@ -112,16 +110,11 @@ components:
             enum:
               - user
               - admin
-        createdAt:
-          type: string
-          format: date
-        updatedAt:
+        lastLoginAt:
           type: string
           format: date
       required:
         - id
         - name
-        - email
         - roles
-        - createdAt
-        - updatedAt
+        - lastLoginAt
