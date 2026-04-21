@@ -12,15 +12,4 @@ export default defineConfig({
       afterAllFilesWrite: "npm run lint:prettier",
     },
   },
-  profile: {
-    input: "./openapi/profile.yaml",
-    output: {
-      target: "./orval/profile.ts",
-      client: "swr",
-      baseUrl: "/api",
-    },
-    hooks: {
-      afterAllFilesWrite: "npm run lint:prettier",
-    },
-  },
 });
