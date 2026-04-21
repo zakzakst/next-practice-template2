@@ -30,6 +30,13 @@ export const POST = withErrorHandler(
       throw new ApiError(404, "対応するユーザーが見つかりません", "NOT_FOUND");
     }
 
+    // === 最終ログイン日時の更新 ===
+    const authIndex = auths.findIndex((a) => a === auth);
+    auths[authIndex] = {
+      ...auth,
+      lastLoginAt: new Date().toISOString(),
+    };
+
     // === レスポンス作成 ===
     const response = NextResponse.json({
       message: "ログイン成功",
