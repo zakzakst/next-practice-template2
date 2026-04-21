@@ -1,20 +1,23 @@
+import { logout, signin } from "./utils";
 import { expect, test } from "@playwright/test";
 
-// TODO: chromium, webkit, firefoxと複数回実行するとメールアドレス重複でエラーになってしまう？
-test.fixme("サインイン成功したらトップページに遷移する", async ({ page }) => {
+test("サインイン成功したらトップページに遷移する", async ({
+  page,
+  defaultBrowserType,
+}) => {
   // Arrange
-  await page.goto("http://localhost:3000/signin");
-  const emailInput = page.getByRole("textbox", { name: "メールアドレス" });
-  const passwordInput = page.getByRole("textbox", { name: "パスワード" });
-  const submitButton = page.getByRole("button", { name: "ユーザー登録" });
-
-  // Act
-  await emailInput.pressSequentially("new@example.com");
-  await passwordInput.pressSequentially("passwordnew");
-  await page.keyboard.press("Tab");
-  await submitButton.click();
+  await signin(
+    { page, defaultBrowserType },
+    {
+      // NOTE: 日付と利用ブラウザをアドレス名に含めることで、アドレス重複エラーを回避
+      email: `${Date.now()}${defaultBrowserType}@example.com`,
+      password: "passwordnew",
+    },
+  );
 
   // Assert
   await expect(page).toHaveURL("http://localhost:3000");
   await expect(page.getByText("名前未設定")).toBeVisible();
+
+  await logout(page);
 });

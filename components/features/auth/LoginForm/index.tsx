@@ -34,7 +34,7 @@ export type LoginFormValues = z.infer<typeof loginFormSchema>;
 export const LoginForm = () => {
   const router = useRouter();
   const { trigger, isMutating } = useAuthLogin();
-  const { profileMutate } = useAuth();
+  const { mutate } = useAuth();
   const {
     register,
     handleSubmit,
@@ -52,11 +52,11 @@ export const LoginForm = () => {
     async (values: LoginFormValues) => {
       if (isMutating) return;
       await trigger(values);
-      await profileMutate();
+      await mutate();
       toast("ログインしました");
       router.push("/");
     },
-    [isMutating, trigger, profileMutate, router],
+    [isMutating, trigger, mutate, router],
   );
 
   return (

@@ -34,7 +34,7 @@ export type SigninFormValues = z.infer<typeof signinFormSchema>;
 export const SigninForm = () => {
   const router = useRouter();
   const { trigger, isMutating } = useAuthSignin();
-  const { profileMutate } = useAuth();
+  const { mutate } = useAuth();
   const {
     register,
     handleSubmit,
@@ -52,11 +52,11 @@ export const SigninForm = () => {
     async (values: SigninFormValues) => {
       if (isMutating) return;
       await trigger(values);
-      await profileMutate();
+      await mutate();
       toast("ユーザー登録しました");
       router.push("/");
     },
-    [isMutating, trigger, profileMutate, router],
+    [isMutating, trigger, mutate, router],
   );
 
   return (

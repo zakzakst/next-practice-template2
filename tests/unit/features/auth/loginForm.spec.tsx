@@ -25,7 +25,7 @@ describe("LoginForm", () => {
     const pushMock = vi.fn();
     vi.mocked(useAuth).mockReturnValue({
       me: undefined,
-      profileMutate: async () => {},
+      mutate: async () => {},
       logout: meMutateMock,
       isLoading: false,
       isMutating: false,

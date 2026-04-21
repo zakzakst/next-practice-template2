@@ -12,7 +12,7 @@ type AuthContextType = {
   me?: AuthMe;
   isLoading: boolean;
   isMutating: boolean;
-  profileMutate: () => Promise<void>;
+  mutate: () => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { trigger, isMutating } = useAuthLogout();
 
   // TODO: 調べて修正。SWRから返ってくるmutateの型指定が分からなかったので、一旦useCallbackでラップして回避している
-  const profileMutate = useCallback(async () => {
+  const meMutate = useCallback(async () => {
     mutate();
   }, [mutate]);
 
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         me: data?.data?.me,
         isLoading,
         isMutating,
-        profileMutate,
+        mutate: meMutate,
         logout,
       }}
     >

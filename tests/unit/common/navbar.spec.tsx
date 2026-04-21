@@ -13,7 +13,7 @@ describe("Navbar", () => {
     // Arrange
     vi.mocked(useAuth).mockReturnValue({
       me: undefined,
-      profileMutate: async () => {},
+      mutate: async () => {},
       logout: async () => {},
       isLoading: false,
       isMutating: false,
@@ -30,7 +30,7 @@ describe("Navbar", () => {
     // Arrange
     vi.mocked(useAuth).mockReturnValue({
       me: undefined,
-      profileMutate: async () => {},
+      mutate: async () => {},
       logout: async () => {},
       isLoading: false,
       isMutating: false,
@@ -55,7 +55,7 @@ describe("Navbar", () => {
         roles: ["user"],
         lastLoginAt: "2026-04-01T08:00:00.000Z",
       },
-      profileMutate: async () => {},
+      mutate: async () => {},
       logout: logoutMock,
       isLoading: false,
       isMutating: false,
